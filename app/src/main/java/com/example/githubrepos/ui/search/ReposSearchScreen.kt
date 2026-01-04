@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
@@ -27,26 +26,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.example.githubrepos.core.model.RepoData
+import com.example.githubrepos.core.model.RepoOwnerData
 import com.example.githubrepos.ui.search.component.SimpleInputSearchBar
 import com.example.githubrepos.ui.theme.GitHubReposTheme
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun ReposSearchScreen(viewModel: ReposSearchViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val pagingItems = viewModel.pagingDataFlow.collectAsLazyPagingItems()
     ReposSearchContent(
-        searchState = uiState.searchState,
+        pagingItems = pagingItems,
         query = uiState.query,
-        onSearch = viewModel::updateQuery,
-        onRetry = viewModel::retry,
+        hasSearchStarted = uiState.hasSearchStarted,
+        onQueryChanged = viewModel::updateQuery,
+        onRetry = pagingItems::retry,
     )
 }
 
 @Composable
 private fun ReposSearchContent(
-    searchState: SearchState,
+    pagingItems: LazyPagingItems<RepoData>,
     query: String,
-    onSearch: (text: String) -> Unit,
+    hasSearchStarted: Boolean,
+    onQueryChanged: (text: String) -> Unit,
     onRetry: () -> Unit,
 ) {
     Scaffold(
@@ -60,27 +69,35 @@ private fun ReposSearchContent(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            SimpleInputSearchBar(query = query, onQueryChange = onSearch)
+            SimpleInputSearchBar(query = query, onQueryChanged = onQueryChanged)
 
-            when (searchState) {
-                is SearchState.Idle -> {
-                    // nop
-                }
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                when {
+                    // 初期状態
+                    !hasSearchStarted -> {
+                        // empty
+                    }
 
-                is SearchState.Loading -> {
-                    LoadingContent()
-                }
+                    // 検索中
+                    pagingItems.loadState.refresh is LoadState.Loading -> {
+                        LoadingContent()
+                    }
 
-                is SearchState.Found -> {
-                    ReposList(searchState.items)
-                }
+                    // エラー
+                    pagingItems.loadState.refresh is LoadState.Error -> {
+                        ErrorContent(onRetry = onRetry)
+                    }
 
-                is SearchState.NotFound -> {
-                    NotFoundContent()
-                }
+                    // 検索結果0件
+                    pagingItems.itemCount == 0 &&
+                            pagingItems.loadState.refresh is LoadState.NotLoading -> {
+                        NotFoundContent()
+                    }
 
-                is SearchState.Error -> {
-                    ErrorContent(onRetry = onRetry)
+                    // 検索成功
+                    else -> {
+                        ReposList(pagingItems = pagingItems, onRetry = onRetry)
+                    }
                 }
             }
         }
@@ -89,25 +106,43 @@ private fun ReposSearchContent(
 
 @Composable
 private fun LoadingContent() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
-    }
+    CircularProgressIndicator()
 }
 
 @Composable
-private fun ReposList(items: List<RepoData>) {
+private fun ReposList(pagingItems: LazyPagingItems<RepoData>, onRetry: () -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(items) { item ->
-            ReposItem(item)
+        items(
+            count = pagingItems.itemCount,
+            key = pagingItems.itemKey { it.id }
+        ) { index ->
+            pagingItems[index]?.let {
+                RepoItem(item = it)
+            }
+        }
+        item {
+            when (pagingItems.loadState.append) {
+                // 追加ロード中
+                is LoadState.Loading -> {
+                    LoadingContent()
+                }
+
+                // 追加ロードエラー
+                is LoadState.Error -> {
+                    ErrorContent(onRetry = onRetry)
+                }
+
+                else -> {}
+            }
         }
     }
 }
 
 @Composable
-private fun ReposItem(item: RepoData) {
+private fun RepoItem(item: RepoData) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -149,7 +184,8 @@ private fun NotFoundContent() {
 @Composable
 private fun ErrorContent(onRetry: () -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(text = "エラーが発生しました\n時間をおいてリトライしてください")
@@ -159,14 +195,39 @@ private fun ErrorContent(onRetry: () -> Unit) {
     }
 }
 
+// NOTE: Paging3のプレビューが上手くいかず、Loading状態しかプレビューできていない
+private val previewRepoDataList = listOf(
+    RepoData(
+        id = 1,
+        name = "repo1",
+        fullName = "full repo1",
+        description = "description of repo1",
+        homepage = "https://example.com/repo1",
+        stargazersCount = 111,
+        language = "Kotlin",
+        owner = RepoOwnerData(login = "login", avatarUrl = "https://example.com")
+    ),
+    RepoData(
+        id = 2,
+        name = "repo2",
+        fullName = "full repo2",
+        description = "description of repo2",
+        homepage = "https://example.com/repo2",
+        stargazersCount = 222,
+        language = "Python",
+        owner = RepoOwnerData(login = "login", avatarUrl = "https://example.com")
+    )
+).let { PagingData.from(data = it) }.let { flowOf(it) }
+
 @Composable
 @Preview
-fun ReposSearchContentPreview() {
+fun ReposSearchInitialPreview() {
     GitHubReposTheme {
         ReposSearchContent(
-            searchState = SearchState.previewFound,
+            pagingItems = previewRepoDataList.collectAsLazyPagingItems(),
+            hasSearchStarted = false,
             query = "kotlin",
-            onSearch = {},
+            onQueryChanged = {},
             onRetry = {},
         )
     }
@@ -174,12 +235,13 @@ fun ReposSearchContentPreview() {
 
 @Composable
 @Preview
-fun ReposSearchContentErrorPreview() {
+fun ReposSearchSearchingPreview() {
     GitHubReposTheme {
         ReposSearchContent(
-            searchState = SearchState.Error,
+            pagingItems = previewRepoDataList.collectAsLazyPagingItems(),
+            hasSearchStarted = true,
             query = "kotlin",
-            onSearch = {},
+            onQueryChanged = {},
             onRetry = {},
         )
     }

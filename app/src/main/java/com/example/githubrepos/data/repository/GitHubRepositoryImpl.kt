@@ -1,20 +1,27 @@
 package com.example.githubrepos.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.githubrepos.core.api.GitHubApiService
 import com.example.githubrepos.core.api.extension.toRepoData
 import com.example.githubrepos.core.model.RepoData
+import com.example.githubrepos.data.repository.pading.RepoSearchPagingSource
+import kotlinx.coroutines.flow.Flow
 
 class GitHubRepositoryImpl(private val apiService: GitHubApiService) : GitHubRepository {
 
     // リポジトリを検索する
-    override suspend fun searchRepos(query: String): Result<List<RepoData>> {
-        return try {
-            val response = apiService.searchRepositories(query)
-            val items = response.items.map { it.toRepoData() }
-            Result.success(items)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+    override suspend fun searchRepos(query: String): Flow<PagingData<RepoData>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 30,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                RepoSearchPagingSource(apiService, query)
+            }
+        ).flow
     }
 
     // 特定のリポジトリ詳細を取得する

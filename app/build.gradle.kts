@@ -75,6 +75,11 @@ dependencies {
 //    ksp(libs.library("hilt.android.compiler"))
 //    ksp(libs.library("hilt.compiler"))
 
+    // Paging
+    implementation(libs.androidx.paging.common)
+    implementation(libs.androidx.paging.compose)
+
+    // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

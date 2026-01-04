@@ -10,6 +10,8 @@ interface GitHubApiService {
     @GET("search/repositories")
     suspend fun searchRepositories(
         @Query("q") query: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
         @Query("sort") sort: String = "stars"
     ): RepoSearchResponse
 

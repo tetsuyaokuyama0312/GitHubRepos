@@ -16,12 +16,10 @@ import androidx.compose.ui.unit.dp
 import com.example.githubrepos.ui.theme.GitHubReposTheme
 
 @Composable
-fun SimpleInputSearchBar(query: String, onQueryChange: (query: String) -> Unit) {
+fun SimpleInputSearchBar(query: String, onQueryChanged: (query: String) -> Unit) {
     OutlinedTextField(
         value = query,
-        onValueChange = {
-            onQueryChange(it)
-        },
+        onValueChange = onQueryChanged,
         modifier = Modifier
             .fillMaxWidth(),
         placeholder = { Text("検索キーワードを入力") },
@@ -30,29 +28,20 @@ fun SimpleInputSearchBar(query: String, onQueryChange: (query: String) -> Unit) 
         },
         trailingIcon = {
             if (query.isNotEmpty()) {
-                IconButton(onClick = { onQueryChange("") }) {
+                IconButton(onClick = { onQueryChanged("") }) {
                     Icon(Icons.Default.Clear, contentDescription = "クリア")
                 }
             }
         },
-//        // キーボードの「Enter」を「検索」アイコンに変更
-//        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-//        // キーボードの検索ボタンが押された時の処理
-//        keyboardActions = KeyboardActions(
-//            onSearch = {
-//                onSearch(text)
-//                focusManager.clearFocus() // キーボードを閉じる
-//            }
-//        ),
         singleLine = true,
-        shape = RoundedCornerShape(28.dp) // 丸みを帯びたデザイン
+        shape = RoundedCornerShape(28.dp)
     )
 }
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun SimpleInputSearchBarPreview() {
     GitHubReposTheme {
-        SimpleInputSearchBar(query = "query", onQueryChange = {})
+        SimpleInputSearchBar(query = "query", onQueryChanged = {})
     }
 }
