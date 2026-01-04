@@ -1,7 +1,7 @@
 package com.example.githubrepos.core.common.di
 
-import com.example.githubrepos.core.common.BuildConfigProvider
-import com.example.githubrepos.core.common.BuildConfigProviderImpl
+import com.example.githubrepos.core.common.AppConfig
+import com.example.githubrepos.core.common.AppConfigImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +14,7 @@ object CommonModule {
 
     @Provides
     @Singleton
-    fun providesBuildConfigProvider(): BuildConfigProvider {
-        return BuildConfigProviderImpl
+    fun providesBuildConfigProvider(): AppConfig {
+        return AppConfigImpl
     }
 }

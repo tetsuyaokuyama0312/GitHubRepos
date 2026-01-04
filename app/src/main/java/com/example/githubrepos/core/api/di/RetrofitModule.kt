@@ -1,6 +1,7 @@
 package com.example.githubrepos.core.api.di
 
-import com.example.githubrepos.core.common.BuildConfigProvider
+import com.example.githubrepos.core.api.interceptor.GitHubAuthInterceptor
+import com.example.githubrepos.core.common.AppConfig
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -31,16 +32,20 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(
-        buildConfigProvider: BuildConfigProvider
+        appConfig: AppConfig
     ): Call.Factory {
         return OkHttpClient.Builder()
             .apply {
-                // デバッグビルド時にネットワークログが出力されるように設定
-                if (buildConfigProvider.isDebug) {
+                if (appConfig.isDebug) {
                     addInterceptor(HttpLoggingInterceptor().apply {
                         level = HttpLoggingInterceptor.Level.BODY
                     })
                 }
+                addInterceptor(
+                    GitHubAuthInterceptor {
+                        appConfig.githubToken
+                    }
+                )
 
                 connectTimeout(30, TimeUnit.SECONDS)
                 readTimeout(30, TimeUnit.SECONDS)
@@ -54,9 +59,9 @@ object RetrofitModule {
     fun provideRetrofit(
         networkJson: Json,
         okhttpCallFactory: Call.Factory,
-        buildConfigProvider: BuildConfigProvider,
+        appConfig: AppConfig,
     ): Retrofit = Retrofit.Builder()
-        .baseUrl(buildConfigProvider.apiBaseUrl)
+        .baseUrl(appConfig.apiBaseUrl)
         .callFactory { okhttpCallFactory.newCall(it) }
         .addConverterFactory(networkJson.asConverterFactory("application/json".toMediaType()))
         .build()

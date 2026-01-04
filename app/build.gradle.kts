@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +7,17 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+}
+
+fun loadLocalProperties(): Properties {
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { stream ->
+            localProperties.load(stream)
+        }
+    }
+    return localProperties
 }
 
 android {
@@ -19,6 +32,18 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = loadLocalProperties()
+        buildConfigField(
+            "String",
+            "API_BASE_URL",
+            "\"${properties["API_BASE_URL"]}\""
+        )
+        buildConfigField(
+            "String",
+            "GITHUB_TOKEN",
+            "\"${properties["GITHUB_TOKEN"]}\""
+        )
     }
 
     buildTypes {
