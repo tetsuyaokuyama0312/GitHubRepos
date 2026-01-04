@@ -8,6 +8,7 @@ data class RepoData(
     val homepage: String?,
     val stargazersCount: Int,
     val language: String?,
+    val htmlUrl: String,
     val owner: RepoOwnerData
 )
 

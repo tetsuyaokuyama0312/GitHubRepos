@@ -22,6 +22,8 @@ data class GitHubRepo(
     @SerialName("stargazers_count")
     val stargazersCount: Int,
     val language: String?,
+    @SerialName("html_url")
+    val htmlUrl: String,
     val owner: RepoOwner
 )
 

@@ -12,6 +12,7 @@ fun GitHubRepo.toRepoData(): RepoData = RepoData(
     homepage = this.homePage,
     stargazersCount = this.stargazersCount,
     language = this.language,
+    htmlUrl = this.htmlUrl,
     owner = RepoOwnerData(
         this.owner.login,
         this.owner.avatarUrl,

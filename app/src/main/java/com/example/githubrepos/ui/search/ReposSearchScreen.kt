@@ -1,5 +1,6 @@
 package com.example.githubrepos.ui.search
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -31,6 +33,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.example.githubrepos.core.common.extension.openUrl
 import com.example.githubrepos.core.model.RepoData
 import com.example.githubrepos.core.model.RepoOwnerData
 import com.example.githubrepos.ui.search.component.SimpleInputSearchBar
@@ -41,11 +44,13 @@ import kotlinx.coroutines.flow.flowOf
 fun ReposSearchScreen(viewModel: ReposSearchViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val pagingItems = viewModel.pagingDataFlow.collectAsLazyPagingItems()
+    val context = LocalContext.current
     ReposSearchContent(
         pagingItems = pagingItems,
         query = uiState.query,
         hasSearchStarted = uiState.hasSearchStarted,
         onQueryChanged = viewModel::updateQuery,
+        onClickItem = context::openUrl,
         onRetry = pagingItems::retry,
     )
 }
@@ -56,6 +61,7 @@ private fun ReposSearchContent(
     query: String,
     hasSearchStarted: Boolean,
     onQueryChanged: (text: String) -> Unit,
+    onClickItem: (url: String) -> Unit,
     onRetry: () -> Unit,
 ) {
     Scaffold(
@@ -96,7 +102,11 @@ private fun ReposSearchContent(
 
                     // 検索成功
                     else -> {
-                        ReposList(pagingItems = pagingItems, onRetry = onRetry)
+                        ReposList(
+                            pagingItems = pagingItems,
+                            onClickItem = onClickItem,
+                            onRetry = onRetry
+                        )
                     }
                 }
             }
@@ -110,7 +120,11 @@ private fun LoadingContent() {
 }
 
 @Composable
-private fun ReposList(pagingItems: LazyPagingItems<RepoData>, onRetry: () -> Unit) {
+private fun ReposList(
+    pagingItems: LazyPagingItems<RepoData>,
+    onClickItem: (url: String) -> Unit,
+    onRetry: () -> Unit
+) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -120,7 +134,7 @@ private fun ReposList(pagingItems: LazyPagingItems<RepoData>, onRetry: () -> Uni
             key = pagingItems.itemKey { it.id }
         ) { index ->
             pagingItems[index]?.let {
-                RepoItem(item = it)
+                RepoItem(item = it, onClick = onClickItem)
             }
         }
         item {
@@ -142,9 +156,11 @@ private fun ReposList(pagingItems: LazyPagingItems<RepoData>, onRetry: () -> Uni
 }
 
 @Composable
-private fun RepoItem(item: RepoData) {
+private fun RepoItem(item: RepoData, onClick: (url: String) -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = { onClick(item.htmlUrl) }),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         )
@@ -205,6 +221,7 @@ private val previewRepoDataList = listOf(
         homepage = "https://example.com/repo1",
         stargazersCount = 111,
         language = "Kotlin",
+        htmlUrl = "https://example.com/repo1",
         owner = RepoOwnerData(login = "login", avatarUrl = "https://example.com")
     ),
     RepoData(
@@ -215,6 +232,7 @@ private val previewRepoDataList = listOf(
         homepage = "https://example.com/repo2",
         stargazersCount = 222,
         language = "Python",
+        htmlUrl = "https://example.com/repo2",
         owner = RepoOwnerData(login = "login", avatarUrl = "https://example.com")
     )
 ).let { PagingData.from(data = it) }.let { flowOf(it) }
@@ -228,6 +246,7 @@ fun ReposSearchInitialPreview() {
             hasSearchStarted = false,
             query = "kotlin",
             onQueryChanged = {},
+            onClickItem = {},
             onRetry = {},
         )
     }
@@ -242,6 +261,7 @@ fun ReposSearchSearchingPreview() {
             hasSearchStarted = true,
             query = "kotlin",
             onQueryChanged = {},
+            onClickItem = {},
             onRetry = {},
         )
     }
