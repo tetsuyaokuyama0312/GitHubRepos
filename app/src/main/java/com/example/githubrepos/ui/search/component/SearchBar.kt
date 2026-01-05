@@ -16,20 +16,24 @@ import androidx.compose.ui.unit.dp
 import com.example.githubrepos.ui.theme.GitHubReposTheme
 
 @Composable
-fun SimpleInputSearchBar(query: String, onQueryChanged: (query: String) -> Unit) {
+fun SimpleInputSearchBar(
+    query: String,
+    placeholder: String,
+    onQueryChanged: (query: String) -> Unit
+) {
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChanged,
         modifier = Modifier
             .fillMaxWidth(),
-        placeholder = { Text("検索キーワードを入力") },
+        placeholder = { Text(text = placeholder) },
         leadingIcon = {
             Icon(Icons.Default.Search, contentDescription = null)
         },
         trailingIcon = {
             if (query.isNotEmpty()) {
                 IconButton(onClick = { onQueryChanged("") }) {
-                    Icon(Icons.Default.Clear, contentDescription = "クリア")
+                    Icon(Icons.Default.Clear, contentDescription = "clear")
                 }
             }
         },
@@ -42,6 +46,20 @@ fun SimpleInputSearchBar(query: String, onQueryChanged: (query: String) -> Unit)
 @Preview(showBackground = true)
 fun SimpleInputSearchBarPreview() {
     GitHubReposTheme {
-        SimpleInputSearchBar(query = "query", onQueryChanged = {})
+        SimpleInputSearchBar(
+            query = "query",
+            placeholder = "検索キーワードを入力",
+            onQueryChanged = {})
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun SimpleInputSearchBarEmptyPreview() {
+    GitHubReposTheme {
+        SimpleInputSearchBar(
+            query = "",
+            placeholder = "検索キーワードを入力",
+            onQueryChanged = {})
     }
 }

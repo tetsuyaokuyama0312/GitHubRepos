@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -33,6 +34,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.example.githubrepos.R
 import com.example.githubrepos.core.common.extension.openUrl
 import com.example.githubrepos.core.model.RepoData
 import com.example.githubrepos.ui.search.component.SimpleInputSearchBar
@@ -74,7 +76,11 @@ private fun ReposSearchContent(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            SimpleInputSearchBar(query = query, onQueryChanged = onQueryChanged)
+            SimpleInputSearchBar(
+                query = query,
+                placeholder = stringResource(R.string.repos_search_search_bar_placeholder),
+                onQueryChanged = onQueryChanged
+            )
 
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 when {
@@ -191,9 +197,7 @@ private fun RepoItem(item: RepoData, onClick: (url: String) -> Unit) {
 
 @Composable
 private fun NotFoundContent() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = "リポジトリが見つかりませんでした")
-    }
+    Text(text = stringResource(R.string.repos_search_not_found))
 }
 
 @Composable
@@ -203,9 +207,9 @@ private fun ErrorContent(onRetry: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(text = "エラーが発生しました\n時間をおいてリトライしてください")
+        Text(text = stringResource(R.string.repos_search_error))
         TextButton(onClick = onRetry) {
-            Text("リトライ")
+            Text(text = stringResource(R.string.repos_search_retry))
         }
     }
 }
