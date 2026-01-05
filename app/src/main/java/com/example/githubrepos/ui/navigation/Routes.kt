@@ -6,7 +6,4 @@ import kotlinx.serialization.Serializable
 object Routes {
     @Serializable
     data object Search
-
-    @Serializable
-    data object Details
 }

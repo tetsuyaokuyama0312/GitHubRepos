@@ -7,6 +7,4 @@ import kotlinx.coroutines.flow.Flow
 interface GitHubRepository {
 
     suspend fun searchRepos(query: String): Flow<PagingData<RepoData>>
-
-    suspend fun getRepoDetails(owner: String, name: String): Result<RepoData>
 }

@@ -17,8 +17,5 @@ fun GitHubReposNavHost() {
         composable<Routes.Search> {
             ReposSearchScreen()
         }
-        composable<Routes.Details> {
-            ReposSearchScreen()
-        }
     }
 }
