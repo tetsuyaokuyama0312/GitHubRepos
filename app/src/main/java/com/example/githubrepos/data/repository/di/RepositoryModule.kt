@@ -1,6 +1,6 @@
 package com.example.githubrepos.data.repository.di
 
-import com.example.githubrepos.core.api.GitHubApiService
+import com.example.githubrepos.data.api.GitHubApiService
 import com.example.githubrepos.data.repository.GitHubRepository
 import com.example.githubrepos.data.repository.GitHubRepositoryImpl
 import dagger.Module

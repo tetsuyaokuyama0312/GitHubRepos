@@ -35,7 +35,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.example.githubrepos.core.common.extension.openUrl
 import com.example.githubrepos.core.model.RepoData
-import com.example.githubrepos.core.model.RepoOwnerData
 import com.example.githubrepos.ui.search.component.SimpleInputSearchBar
 import com.example.githubrepos.ui.theme.GitHubReposTheme
 import kotlinx.coroutines.flow.flowOf
@@ -216,24 +215,18 @@ private val previewRepoDataList = listOf(
     RepoData(
         id = 1,
         name = "repo1",
-        fullName = "full repo1",
         description = "description of repo1",
-        homepage = "https://example.com/repo1",
         stargazersCount = 111,
         language = "Kotlin",
         htmlUrl = "https://example.com/repo1",
-        owner = RepoOwnerData(login = "login", avatarUrl = "https://example.com")
     ),
     RepoData(
         id = 2,
         name = "repo2",
-        fullName = "full repo2",
         description = "description of repo2",
-        homepage = "https://example.com/repo2",
         stargazersCount = 222,
         language = "Python",
         htmlUrl = "https://example.com/repo2",
-        owner = RepoOwnerData(login = "login", avatarUrl = "https://example.com")
     )
 ).let { PagingData.from(data = it) }.let { flowOf(it) }
 

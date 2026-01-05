@@ -3,9 +3,9 @@ package com.example.githubrepos.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.example.githubrepos.core.api.GitHubApiService
-import com.example.githubrepos.core.api.extension.toRepoData
 import com.example.githubrepos.core.model.RepoData
+import com.example.githubrepos.data.api.GitHubApiService
+import com.example.githubrepos.data.api.extension.toRepoData
 import com.example.githubrepos.data.repository.pading.RepoSearchPagingSource
 import kotlinx.coroutines.flow.Flow
 

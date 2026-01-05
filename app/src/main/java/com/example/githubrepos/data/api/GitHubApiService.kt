@@ -1,7 +1,7 @@
-package com.example.githubrepos.core.api
+package com.example.githubrepos.data.api
 
-import com.example.githubrepos.core.api.model.GitHubRepo
-import com.example.githubrepos.core.api.model.RepoSearchResponse
+import com.example.githubrepos.data.api.model.GitHubRepo
+import com.example.githubrepos.data.api.model.RepoSearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

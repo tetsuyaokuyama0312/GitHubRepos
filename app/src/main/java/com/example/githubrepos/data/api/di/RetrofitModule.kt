@@ -1,7 +1,7 @@
-package com.example.githubrepos.core.api.di
+package com.example.githubrepos.data.api.di
 
-import com.example.githubrepos.core.api.interceptor.GitHubAuthInterceptor
 import com.example.githubrepos.core.common.AppConfig
+import com.example.githubrepos.data.api.interceptor.GitHubAuthInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides

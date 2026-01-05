@@ -1,6 +1,6 @@
-package com.example.githubrepos.core.api.di
+package com.example.githubrepos.data.api.di
 
-import com.example.githubrepos.core.api.GitHubApiService
+import com.example.githubrepos.data.api.GitHubApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -2,9 +2,9 @@ package com.example.githubrepos.data.repository.pading
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.githubrepos.core.api.GitHubApiService
-import com.example.githubrepos.core.api.extension.toRepoData
 import com.example.githubrepos.core.model.RepoData
+import com.example.githubrepos.data.api.GitHubApiService
+import com.example.githubrepos.data.api.extension.toRepoData
 
 class RepoSearchPagingSource(
     private val apiService: GitHubApiService,

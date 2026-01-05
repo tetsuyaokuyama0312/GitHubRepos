@@ -1,4 +1,4 @@
-package com.example.githubrepos.core.api.interceptor
+package com.example.githubrepos.data.api.interceptor
 
 import okhttp3.Interceptor
 import okhttp3.Response
