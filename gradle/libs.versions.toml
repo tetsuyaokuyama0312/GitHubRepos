@@ -1,10 +1,11 @@
 [versions]
-agp = "8.11.2"
-kotlin = "2.2.0"
+agp = "8.13.2"
+kotlin = "2.3.0"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
+kotlinMetadataJvm = "2.3.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.12.2"
 composeBom = "2025.12.01"
@@ -15,7 +16,6 @@ kotlinSerializationJson = "1.9.0"
 retrofitKotlinSerialization = "1.0.0"
 hilt = "2.57.2"
 hiltNavigationCompose = "1.3.0"
-coroutines = "1.10.2"
 navigation = "2.9.6"
 ksp = "2.2.21-2.0.4"
 paging = "3.3.6"
@@ -39,7 +39,6 @@ androidx-material-icons-core = { group = "androidx.compose.material", name = "ma
 
 # HTTP Connection
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 
 # JSONパース
@@ -48,19 +47,16 @@ retrofit-kotlinx-serialization-converter = { group = "com.jakewharton.retrofit",
 
 # Navigation
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
-androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigation" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
-
-# Coroutines
-kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
-kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 
 # DI
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
-hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
+
+# Kotlin Metadata Jvm
+# Kotlin バージョンを2.3.0にするとHiltでエラーが発生するため、回避策としてメタデータライブラリを追加
+kotlin-metadata-jvm = { module = "org.jetbrains.kotlin:kotlin-metadata-jvm", version.ref = "kotlinMetadataJvm" }
 
 # paging
 androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "paging" }

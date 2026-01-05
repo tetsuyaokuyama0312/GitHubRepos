@@ -84,7 +84,7 @@ dependencies {
     implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.navigation.compose)
 
-    // data
+    // HTTP Connection
     implementation(libs.retrofit.core)
     implementation(libs.okhttp.logging.interceptor)
 
@@ -97,8 +97,9 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
-//    ksp(libs.library("hilt.android.compiler"))
-//    ksp(libs.library("hilt.compiler"))
+
+    // Kotlin Metadata Jvm
+    ksp(libs.kotlin.metadata.jvm)
 
     // Paging
     implementation(libs.androidx.paging.common)
