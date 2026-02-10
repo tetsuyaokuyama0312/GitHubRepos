@@ -1,188 +1,192 @@
-# GitHubリポジトリ検索アプリ
+# GitHub Repository Search App
 
-## 概要
+## Overview
 
-GitHub のリポジトリ検索 API を利用し、キーワード検索・無限スクロールによる結果表示を行います。
+This application uses the GitHub Repository Search API to perform keyword-based searches
+and display results with infinite scrolling.
 
-実装にあたっては **Jetpack Compose / Hilt / Retrofit / Paging3** など、現在の Android
-開発で一般的な技術スタックを用い、
-可読性・拡張性を意識した構成としています。
+It is implemented using a modern Android tech stack such as  
+**Jetpack Compose / Hilt / Retrofit / Paging3**, which are commonly used in current Android development.
+The project structure emphasizes readability, maintainability, and extensibility.
 
-本アプリは、GitHub Search API を利用したサンプルアプリとして、
-実運用を意識したアーキテクチャ設計・状態管理を重視して実装しました。
-
----
-
-## 機能
-
-* GitHub リポジトリの検索
-* 検索キーワードの debounce 処理
-* 無限スクロール（Paging）による検索結果表示
-* 検索結果タップ時に外部ブラウザでリポジトリページを表示
-* ローディング / エラー表示
+This app is designed as a sample application leveraging the GitHub Search API,
+with a strong focus on production-oriented architecture and state management.
 
 ---
 
-## アーキテクチャ
+## Demo
 
-* MVVM アーキテクチャ
-* ViewModel による状態管理
-* Repository 層での API アクセス抽象化
-* Paging3 によるページネーション
+Below is a demo of the implemented application.
 
-```
+![demo](docs/demo.gif)
+
+---
+
+## Features
+
+- Search GitHub repositories
+- Debounced search query handling
+- Infinite scrolling with Paging
+- Open repository pages in an external browser on item tap
+- Loading and error state handling
+
+---
+
+## Architecture
+
+- MVVM architecture
+- State management using ViewModel
+- API access abstraction via Repository layer
+- Pagination implemented with Paging3
+
 UI (Compose)
-  ↓
+↓
 ViewModel
-  ↓
+↓
 Repository
-  ↓
+↓
 GitHub API
-```
+
 
 ---
 
-## 使用技術・ライブラリ
+## Technologies & Libraries
 
-### 言語・ビルド
+### Language & Build
 
-* Kotlin
-* Android Gradle Plugin
+- Kotlin
+- Android Gradle Plugin
 
 ### UI
 
-* Jetpack Compose
-* Material3
-* Navigation Compose
+- Jetpack Compose
+- Material3
+- Navigation Compose
 
-### 非同期・状態管理
+### Asynchronous & State Management
 
-* Kotlin Coroutines / Flow
-* Paging3
+- Kotlin Coroutines / Flow
+- Paging3
 
-### ネットワーク
+### Networking
 
-* Retrofit
-* OkHttp
-* Kotlinx Serialization
+- Retrofit
+- OkHttp
+- Kotlinx Serialization
 
-### DI
+### Dependency Injection
 
-* Hilt
+- Hilt
 
-### テスト
+### Testing
 
-* JUnit
-* Espresso
-
----
-
-## バージョン情報（一部抜粋）
-
-* Kotlin: 2.3.0
-* Compose BOM: 2025.12.01
-* Paging: 3.3.6
-* Retrofit: 3.0.0
-* OkHttp: 5.3.2
-* Hilt: 2.57.2
-
-※ 詳細は `libs.versions.toml` を参照してください。
+- JUnit
+- Espresso
 
 ---
 
-## セットアップ
+## Versions (Partial)
 
-### GitHub API トークン
+- Kotlin: 2.3.0
+- Compose BOM: 2025.12.01
+- Paging: 3.3.6
+- Retrofit: 3.0.0
+- OkHttp: 5.3.2
+- Hilt: 2.57.2
 
-GitHub Search API を利用するため、Personal Access Token（PAT）を使用しています。
+For more details, please refer to `libs.versions.toml`.
 
-以下のように `local.properties` へ設定してください。
+---
+
+## Setup
+
+### GitHub API Token
+
+A Personal Access Token (PAT) is required to use the GitHub Search API.
+
+Please add the following entries to `local.properties`:
 
 ```
 API_BASE_URL=https://api.github.com/
 GITHUB_TOKEN=your_github_personal_access_token
 ```
 
-※ トークンはリポジトリに含めていません。
+
+The token is not included in the repository.
 
 ---
 
-## ビルド・実行方法
+## Build & Run
 
-1. Android Studio で本リポジトリを開く
-2. `local.properties` に API_BASE_URL、GITHUB_TOKENを追加
-3. `app` モジュールを Run
+1. Open this repository in Android Studio
+2. Add `API_BASE_URL` and `GITHUB_TOKEN` to `local.properties`
+3. Run the `app` module
 
-Debug ビルドを前提としています。
-
----
-
-## 補足
-
-* リポジトリ詳細画面はアプリ内で実装せず、外部ブラウザ遷移としています
-
-## 工夫した点・こだわった点
-
-### 検索体験の向上
-
-* 検索クエリ入力に **debounce 処理** を入れ、入力途中での不要な API リクエストを抑制しています
-* 初期状態（未検索時）・ローディング・エラー・結果表示を明確に分け、状態に応じた UI 表示を行っています
-
-### ページネーション設計
-
-* GitHub Search API の特性を考慮し、**Paging3** を用いた無限スクロールを実装しています
-* LoadState を用いて、初回ロードと追加ロード（append）で表示を分けています
+This project assumes a Debug build configuration.
 
 ---
 
-## 技術選定の理由
+## Notes
+
+- The repository detail screen is not implemented within the app.
+  Instead, repository pages are opened in an external browser.
+
+---
+
+## Design Considerations & Key Points
+
+### Improved Search Experience
+
+- Debounce processing is applied to search queries to prevent unnecessary API requests during typing
+- UI states such as initial (no search), loading, error, and result display are clearly separated and rendered accordingly
+
+### Pagination Design
+
+- Infinite scrolling is implemented using **Paging3**, taking into account the characteristics of the GitHub Search API
+- `LoadState` is used to differentiate UI behavior between initial load and append (pagination) loading
+
+---
+
+## Reasons for Technology Choices
 
 ### Jetpack Compose
 
-* 宣言的 UI により、状態（UiState / LoadState）と UI の対応関係を明確にできるため
-* 今後の Android 開発の主流であり、保守性・拡張性の観点で適しているため
+- Declarative UI makes the relationship between state (UiState / LoadState) and UI explicit
+- It is the current standard for Android UI development and offers better maintainability and scalability
 
 ### MVVM + Repository
 
-* UI / 状態管理 / データ取得の責務を分離し、可読性とテスタビリティを高めるため
-* ViewModel を中心に、検索クエリや Paging の状態を一元管理できるため
+- Separates concerns between UI, state management, and data fetching to improve readability and testability
+- Centralizes management of search queries and paging state within the ViewModel
 
 ### Paging3
 
-* ページネーション処理（ロード状態管理、リトライ、キャッシュ）を安全かつ簡潔に実装できるため
-* GitHub Search API との相性が良く、実運用を想定した構成にできるため
+- Enables safe and concise implementation of pagination logic, including load state handling, retry mechanisms, and caching
+- Works well with the GitHub Search API and is suitable for production-oriented use cases
 
 ### Retrofit + OkHttp
 
-* Android でのデファクトスタンダードであり、実務での再現性が高いため
-* Interceptor により認証やログ出力を責務分離できるため
+- A de facto standard networking stack in Android development with strong real-world applicability
+- Interceptors allow clear separation of concerns such as authentication and logging
 
 ### Kotlin Coroutines / Flow
 
-* 非同期処理と状態のストリームをシンプルに表現できるため
-* 検索クエリ変更 → データ再取得 の流れを宣言的に記述できるため
+- Provides a simple and expressive way to handle asynchronous processing and state streams
+- Allows declarative handling of search query changes and data reloading
 
 ---
 
-## 今回スコープ外とした点・今後の改善案
+## Out of Scope / Future Improvements
 
-* リポジトリ詳細画面のアプリ内実装（今回は外部ブラウザ遷移で対応）
-* お気に入り（ブックマーク）機能の実装
-* ユニットテスト・UI テストの追加
-
----
-
-## AI利用について
-
-以下の箇所・目的でAIツールを利用しました。
-
-* ページネーションの実装方法調査
-* READMEのテンプレート作成
+- In-app repository detail screen (currently handled via external browser)
+- Favorite (bookmark) feature
+- Additional unit tests and UI tests
 
 ---
 
-## 動作デモ
+## AI Usage
 
-以下は実装したアプリの動作デモです。
+AI tools were used for the following purposes:
 
-![demo](docs/demo.gif)
+- Researching pagination implementation approaches
+- Generating the initial README template
