@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">GitHubRepos</string>
 
-    <string name="repos_search_not_found">リポジトリが見つかりませんでした</string>
-    <string name="repos_search_error">エラーが発生しました\n時間をおいてリトライしてください</string>
-    <string name="repos_search_retry">リトライ</string>
-    <string name="repos_search_search_bar_placeholder">検索キーワードを入力</string>
+    <string name="repos_search_not_found">No repository found</string>
+    <string name="repos_search_error">An error has occurred.\nPlease try again later.</string>
+    <string name="repos_search_retry">Retry</string>
+    <string name="repos_search_search_bar_placeholder">Enter your search keywords</string>
 
 </resources>

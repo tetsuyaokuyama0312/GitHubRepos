@@ -48,7 +48,7 @@ fun SimpleInputSearchBarPreview() {
     GitHubReposTheme {
         SimpleInputSearchBar(
             query = "query",
-            placeholder = "検索キーワードを入力",
+            placeholder = "Enter your search keywords",
             onQueryChanged = {})
     }
 }
@@ -59,7 +59,7 @@ fun SimpleInputSearchBarEmptyPreview() {
     GitHubReposTheme {
         SimpleInputSearchBar(
             query = "",
-            placeholder = "検索キーワードを入力",
+            placeholder = "Enter your search keywords",
             onQueryChanged = {})
     }
 }
